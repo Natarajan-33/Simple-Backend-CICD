@@ -2,18 +2,26 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import random
 from typing import Dict
+from dotenv import load_dotenv
+import os
 
 app = FastAPI(title="Quote API", description="A simple API to get random quotes")
 
-# Enable CORS for frontend communication
+load_dotenv()
+
+# Read comma-separated origins from environment variable
+origin_env = os.getenv("ALLOWED_ORIGINS", "")
+origins = [origin.strip() for origin in origin_env.split(",") if origin]
+
+app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Vite and CRA default ports
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Hardcoded quotes list
 QUOTES = [
     "The only way to do great work is to love what you do. - Steve Jobs",
